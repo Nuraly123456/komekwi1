@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">User Details</h2>
+    </div>
+    <div class="card-body">
+        <div id="userDetailContent">
+            <!-- User details will be loaded here -->
+        </div>
+    </div>
+</div>
+
+<script>
+    // Get user ID from URL
+    const userId = window.location.pathname.split('/').pop();
+    
+    // Load user details
+    fetch(`/api/users/${userId}/with-pricing/`, {
+        headers: {
+            'Authorization': `Bearer ${authToken}`,
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(user => {
+        let html = `
+            <p><strong>Username:</strong> ${user.username}</p>
+            <p><strong>Email:</strong> ${user.email}</p>
+            <p><strong>Role:</strong> ${user.role}</p>
+        `;
+        
+        if (user.pricing) {
+            html += `
+                <h3>Pricing Information</h3>
+                <p><strong>Hourly Rate:</strong> $${user.pricing.hourly_rate}</p>
+                <p><strong>Bonus Percentage:</strong> ${user.pricing.bonus_percentage}%</p>
+            `;
+        }
+        
+        document.getElementById('userDetailContent').innerHTML = html;
+    })
+    .catch(error => {
+        console.error('Error loading user details:', error);
+        document.getElementById('userDetailContent').innerHTML = '<p>Error loading user details</p>';
+    });
+</script>
+{% endblock %}

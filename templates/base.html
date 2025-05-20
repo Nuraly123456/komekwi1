@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Management System</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2980b9;
+            --dark-color: #2c3e50;
+            --light-color: #ecf0f1;
+            --success-color: #27ae60;
+            --danger-color: #e74c3c;
+            --warning-color: #f39c12;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 20px 0;
+            margin-bottom: 30px;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 20px;
+        }
+        
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        nav ul li a:hover {
+            color: var(--primary-color);
+        }
+        
+        .auth-buttons button {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        
+        .login-btn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .logout-btn {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .card-title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: background-color 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .flex-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .flex-item {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            nav ul {
+                margin-top: 15px;
+                justify-content: center;
+            }
+            
+            .auth-buttons {
+                margin-top: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container header-content">
+            <div class="logo">Employee Management</div>
+            <nav>
+                <ul>
+                    <li><a href="#" onclick="showDashboard()">Dashboard</a></li>
+                    <li><a href="#" onclick="showEmployees()">Employees</a></li>
+                    <li><a href="#" onclick="showSchedules()">Schedules</a></li>
+                    <li><a href="#" onclick="showRatings()">Ratings</a></li>
+                    <li><a href="#" onclick="showPricing()">Pricing</a></li>
+                </ul>
+            </nav>
+            <div class="auth-buttons">
+                <button id="loginBtn" class="login-btn" onclick="showLoginForm()">Login</button>
+                <button id="logoutBtn" class="logout-btn hidden" onclick="logout()">Logout</button>
+            </div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div id="dashboardView" class="view">
+            <!-- Dashboard content will be loaded here -->
+        </div>
+        
+        <div id="employeesView" class="view hidden">
+            <!-- Employees content will be loaded here -->
+        </div>
+        
+        <div id="schedulesView" class="view hidden">
+            <!-- Schedules content will be loaded here -->
+        </div>
+        
+        <div id="ratingsView" class="view hidden">
+            <!-- Ratings content will be loaded here -->
+        </div>
+        
+        <div id="pricingView" class="view hidden">
+            <!-- Pricing content will be loaded here -->
+        </div>
+        
+        <div id="loginView" class="view hidden">
+            <!-- Login form will be loaded here -->
+        </div>
+    </div>
+    
+    <script>
+        // Global variables
+        let currentUser = null;
+        let authToken = null;
+        
+        // DOM elements
+        const views = document.querySelectorAll('.view');
+        const loginBtn = document.getElementById('loginBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        
+        // Show a specific view and hide others
+        function showView(viewId) {
+            views.forEach(view => {
+                view.classList.add('hidden');
+            });
+            document.getElementById(viewId).classList.remove('hidden');
+        }
+        
+        // Navigation functions
+        function showDashboard() {
+            showView('dashboardView');
+            loadDashboard();
+        }
+        
+        function showEmployees() {
+            showView('employeesView');
+            loadEmployees();
+        }
+        
+        function showSchedules() {
+            showView('schedulesView');
+            loadSchedules();
+        }
+        
+        function showRatings() {
+            showView('ratingsView');
+            loadRatings();
+        }
+        
+        function showPricing() {
+            showView('pricingView');
+            loadPricing();
+        }
+        
+        function showLoginForm() {
+            showView('loginView');
+            document.getElementById('loginView').innerHTML = `
+                <div class="card">
+                    <div class="card-header">
+                        <h2 class="card-title">Login</h2>
+                    </div>
+                    <div class="card-body">
+                        <form id="loginForm">
+                            <div class="form-group">
+                                <label for="username">Username</label>
+                                <input type="text" id="username" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Password</label>
+                                <input type="password" id="password" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Login</button>
+                        </form>
+                        <div id="loginError" class="alert alert-danger hidden"></div>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('loginForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+                
+                login(username, password);
+            });
+        }
+        
+        // API functions
+        async function login(username, password) {
+            try {
+                const response = await fetch('/api/login/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ username, password })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    authToken = data.access_token;
+                    localStorage.setItem('authToken', authToken);
+                    
+                    // Get current user info
+                    await getCurrentUser();
+                    
+                    // Update UI
+                    loginBtn.classList.add('hidden');
+                    logoutBtn.classList.remove('hidden');
+                    showDashboard();
+                } else {
+                    document.getElementById('loginError').textContent = data.error || 'Invalid credentials';
+                    document.getElementById('loginError').classList.remove('hidden');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                document.getElementById('loginError').textContent = 'An error occurred during login';
+                document.getElementById('loginError').classList.remove('hidden');
+            }
+        }
+        
+        async function logout() {
+            try {
+                await fetch('/api/logout/', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                // Clear auth data
+                authToken = null;
+                currentUser = null;
+                localStorage.removeItem('authToken');
+                
+                // Update UI
+                loginBtn.classList.remove('hidden');
+                logoutBtn.classList.add('hidden');
+                showLoginForm();
+            } catch (error) {
+                console.error('Logout error:', error);
+            }
+        }
+        
+        async function getCurrentUser() {
+            try {
+                const response = await fetch('/api/users/me/', {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    currentUser = await response.json();
+                }
+            } catch (error) {
+                console.error('Error fetching current user:', error);
+            }
+        }
+        
+        // Load data functions
+        async function loadDashboard() {
+            const dashboardView = document.getElementById('dashboardView');
+            
+            if (!currentUser) {
+                dashboardView.innerHTML = '<p>Please login to view dashboard</p>';
+                return;
+            }
+            
+            // For admin users, show more stats
+            if (currentUser.role === 'admin') {
+                dashboardView.innerHTML = `
+                    <div class="flex-container">
+                        <div class="flex-item">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2 class="card-title">Admin Dashboard</h2>
+                                </div>
+                                <div class="card-body">
+                                    <p>Welcome, ${currentUser.username} (${currentUser.role})</p>
+                                    <div id="adminStats"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex-item">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2 class="card-title">Top Workers</h2>
+                                </div>
+                                <div class="card-body">
+                                    <div id="topWorkers"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // Load admin stats
+                loadAdminStats();
+                loadTopWorkers();
+            } else {
+                // Regular user dashboard
+                dashboardView.innerHTML = `
+                    <div class="card">
+                        <div class="card-header">
+                            <h2 class="card-title">My Dashboard</h2>
+                        </div>
+                        <div class="card-body">
+                            <p>Welcome, ${currentUser.username} (${currentUser.role})</p>
+                            <div id="userStats"></div>
+                        </div>
+                    </div>
+                `;
+                
+                // Load user stats
+                loadUserStats();
+            }
+        }
+        
+        async function loadAdminStats() {
+            try {
+                const response = await fetch('/api/users/stats/', {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const stats = await response.json();
+                    document.getElementById('adminStats').innerHTML = `
+                        <p>Total Employees: ${stats.total_employees}</p>
+                        <p>Active Today: ${stats.active_today}</p>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading admin stats:', error);
+            }
+        }
+        
+        async function loadTopWorkers() {
+            try {
+                const response = await fetch('/api/top-workers/', {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const workers = await response.json();
+                    let html = '<table><tr><th>Employee</th><th>Total Hours</th></tr>';
+                    
+                    workers.forEach(worker => {
+                        html += `<tr><td>${worker.employee}</td><td>${worker.total_hours}</td></tr>`;
+                    });
+                    
+                    html += '</table>';
+                    document.getElementById('topWorkers').innerHTML = html;
+                }
+            } catch (error) {
+                console.error('Error loading top workers:', error);
+            }
+        }
+        
+        async function loadUserStats() {
+            try {
+                const response = await fetch(`/api/users/${currentUser.id}/with-pricing/`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const userData = await response.json();
+                    let html = `<p>Role: ${userData.role}</p>`;
+                    
+                    if (userData.pricing) {
+                        html += `
+                            <p>Hourly Rate: $${userData.pricing.hourly_rate}</p>
+                            <p>Bonus Percentage: ${userData.pricing.bonus_percentage}%</p>
+                        `;
+                    }
+                    
+                    document.getElementById('userStats').innerHTML = html;
+                }
+            } catch (error) {
+                console.error('Error loading user stats:', error);
+            }
+        }
+        
+        async function loadEmployees() {
+            const employeesView = document.getElementById('employeesView');
+            
+            if (!currentUser) {
+                employeesView.innerHTML = '<p>Please login to view employees</p>';
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/users/', {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const employees = await response.json();
+                    let html = `
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 class="card-title">Employees</h2>
+                                ${currentUser.role === 'admin' ? 
+                                    '<button class="btn btn-primary" onclick="showAddEmployeeForm()">Add Employee</button>' : 
+                                    ''}
+                            </div>
+                            <div class="card-body">
+                                <table>
+                                    <tr>
+                                        <th>Username</th>
+                                        <th>Email</th>
+                                        <th>Role</th>
+                                        ${currentUser.role === 'admin' ? '<th>Actions</th>' : ''}
+                                    </tr>
+                    `;
+                    
+                    employees.forEach(employee => {
+                        html += `
+                            <tr>
+                                <td>${employee.username}</td>
+                                <td>${employee.email}</td>
+                                <td>${employee.role}</td>
+                                ${currentUser.role === 'admin' ? `
+                                    <td>
+                                        <button class="btn btn-primary" onclick="editEmployee(${employee.id})">Edit</button>
+                                        <button class="btn btn-danger" onclick="deleteEmployee(${employee.id})">Delete</button>
+                                    </td>
+                                ` : ''}
+                            </tr>
+                        `;
+                    });
+                    
+                    html += `
+                                </table>
+                            </div>
+                        </div>
+                    `;
+                    
+                    employeesView.innerHTML = html;
+                }
+            } catch (error) {
+                console.error('Error loading employees:', error);
+                employeesView.innerHTML = '<p>Error loading employees</p>';
+            }
+        }
+        
+        async function loadSchedules() {
+            const schedulesView = document.getElementById('schedulesView');
+            
+            if (!currentUser) {
+                schedulesView.innerHTML = '<p>Please login to view schedules</p>';
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/schedules/', {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const schedules = await response.json();
+                    let html = `
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 class="card-title">Schedules</h2>
+                                <button class="btn btn-primary" onclick="showAddScheduleForm()">Add Schedule</button>
+                            </div>
+                            <div class="card-body">
+                                <table>
+                                    <tr>
+                                        <th>Employee</th>
+                                        <th>Date</th>
+                                        <th>Start Time</th>
+                                        <th>End Time</th>
+                                        <th>Actions</th>
+                                    </tr>
+                    `;
+                    
+                    schedules.forEach(schedule => {
+                        html += `
+                            <tr>
+                                <td>${schedule.employee.username}</td>
+                                <td>${schedule.date}</td>
+                                <td>${schedule.start_time}</td>
+                                <td>${schedule.end_time}</td>
+                                <td>
+                                    <button class="btn btn-primary" onclick="editSchedule(${schedule.id})">Edit</button>
+                                    <button class="btn btn-danger" onclick="deleteSchedule(${schedule.id})">Delete</button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                    
+                    html += `
+                                </table>
+                            </div>
+                        </div>
+                    `;
+                    
+                    schedulesView.innerHTML = html;
+                }
+            } catch (error) {
+                console.error('Error loading schedules:', error);
+                schedulesView.innerHTML = '<p>Error loading schedules</p>';
+            }
+        }
+        
+        async function loadRatings() {
+            const ratingsView = document.getElementById('ratingsView');
+            
+            if (!currentUser) {
+                ratingsView.innerHTML = '<p>Please login to view ratings</p>';
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/ratings/', {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const ratings = await response.json();
+                    let html = `
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 class="card-title">Ratings</h2>
+                                ${currentUser.role === 'admin' ? 
+                                    '<button class="btn btn-primary" onclick="showAddRatingForm()">Add Rating</button>' : 
+                                    ''}
+                            </div>
+                            <div class="card-body">
+                                <table>
+                                    <tr>
+                                        <th>Employee</th>
+                                        <th>Rater</th>
+                                        <th>Rating</th>
+                                        <th>Comments</th>
+                                        ${currentUser.role === 'admin' ? '<th>Actions</th>' : ''}
+                                    </tr>
+                    `;
+                    
+                    ratings.forEach(rating => {
+                        html += `
+                            <tr>
+                                <td>${rating.employee.username}</td>
+                                <td>${rating.rater.username}</td>
+                                <td>${rating.rating}</td>
+                                <td>${rating.comments}</td>
+                                ${currentUser.role === 'admin' ? `
+                                    <td>
+                                        <button class="btn btn-primary" onclick="editRating(${rating.id})">Edit</button>
+                                        <button class="btn btn-danger" onclick="deleteRating(${rating.id})">Delete</button>
+                                    </td>
+                                ` : ''}
+                            </tr>
+                        `;
+                    });
+                    
+                    html += `
+                                </table>
+                            </div>
+                        </div>
+                    `;
+                    
+                    ratingsView.innerHTML = html;
+                }
+            } catch (error) {
+                console.error('Error loading ratings:', error);
+                ratingsView.innerHTML = '<p>Error loading ratings</p>';
+            }
+        }
+        
+        async function loadPricing() {
+            const pricingView = document.getElementById('pricingView');
+            
+            if (!currentUser) {
+                pricingView.innerHTML = '<p>Please login to view pricing</p>';
+                return;
+            }
+            
+            if (currentUser.role !== 'admin') {
+                pricingView.innerHTML = '<p>You do not have permission to view this page</p>';
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/pricing/', {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    const pricing = await response.json();
+                    let html = `
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 class="card-title">Pricing</h2>
+                                <button class="btn btn-primary" onclick="showAddPricingForm()">Add Pricing</button>
+                            </div>
+                            <div class="card-body">
+                                <table>
+                                    <tr>
+                                        <th>Role</th>
+                                        <th>Hourly Rate</th>
+                                        <th>Bonus Percentage</th>
+                                        <th>Actions</th>
+                                    </tr>
+                    `;
+                    
+                    pricing.forEach(item => {
+                        html += `
+                            <tr>
+                                <td>${item.role}</td>
+                                <td>$${item.hourly_rate}</td>
+                                <td>${item.bonus_percentage}%</td>
+                                <td>
+                                    <button class="btn btn-primary" onclick="editPricing(${item.id})">Edit</button>
+                                    <button class="btn btn-danger" onclick="deletePricing(${item.id})">Delete</button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                    
+                    html += `
+                                </table>
+                            </div>
+                        </div>
+                    `;
+                    
+                    pricingView.innerHTML = html;
+                }
+            } catch (error) {
+                console.error('Error loading pricing:', error);
+                pricingView.innerHTML = '<p>Error loading pricing</p>';
+            }
+        }
+        
+        // Check if user is already logged in
+        function checkAuth() {
+            const token = localStorage.getItem('authToken');
+            if (token) {
+                authToken = token;
+                loginBtn.classList.add('hidden');
+                logoutBtn.classList.remove('hidden');
+                getCurrentUser().then(() => {
+                    showDashboard();
+                });
+            } else {
+                showLoginForm();
+            }
+        }
+        
+        // Initialize the app
+        checkAuth();
+    </script>
+</body>
+</html>
+Additional Views
+Here are the additional view templates you can add to your Django templates:
+
+register.html
+html
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2 class="card-title">Register</h2>
+    </div>
+    <div class="card-body">
+        <form id="registerForm">
+            <div class="form-group">
+                <label for="reg-username">Username</label>
+                <input type="text" id="reg-username" required>
+            </div>
+            <div class="form-group">
+                <label for="reg-email">Email</label>
+                <input type="email" id="reg-email" required>
+            </div>
+            <div class="form-group">
+                <label for="reg-password">Password</label>
+                <input type="password" id="reg-password" required>
+            </div>
+            <div class="form-group">
+                <label for="reg-role">Role</label>
+                <select id="reg-role" required>
+                    <option value="">Select Role</option>
+                    <option value="chef">Chef</option>
+                    <option value="waiter">Waiter</option>
+                    <option value="manager">Manager</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Register</button>
+        </form>
+        <div id="registerError" class="alert alert-danger hidden"></div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const username = document.getElementById('reg-username').value;
+        const email = document.getElementById('reg-email').value;
+        const password = document.getElementById('reg-password').value;
+        const role = document.getElementById('reg-role').value;
+        
+        fetch('/api/register/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username, email, password, role })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                alert('Registration successful! Please login.');
+                showLoginForm();
+            } else {
+                document.getElementById('registerError').textContent = data.error || 'Registration failed';
+                document.getElementById('registerError').classList.remove('hidden');
+            }
+        })
+        .catch(error => {
+            console.error('Registration error:', error);
+            document.getElementById('registerError').textContent = 'An error occurred during registration';
+            document.getElementById('registerError').classList.remove('hidden');
+        });
+    });
+</script>
+{% endblock %}
